@@ -1,0 +1,21 @@
+@mixin bg-image($url) {
+	background-image: url($url + "@1x.png"); 
+	background-repeat: no-repeat;
+	[data-dpr="2"] & {
+		background-image: url($url + "@2x.png");
+	} 
+	
+	[data-dpr="3"] & {
+		background-image: url($url + "@3x.png");
+	}
+}
+
+@mixin ft-size($size) {
+	font-size: $size + PX;/*no*/
+	[data-dpr="2"] & {
+		font-size: $size * 2 + PX;/*no*/
+	}
+	[data-dpr="3"] & {
+		font-size: $size * 3 + PX;/*no*/
+	}
+}

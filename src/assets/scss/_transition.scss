@@ -1,0 +1,39 @@
+.fadeIn-enter,
+.fadeIn-leave-to {
+	opacity: 0;
+}
+.fadeIn-enter-active,
+.fadeIn-leave-active {
+	transition: all .3s;
+}
+
+.slideDown-enter,
+.slideDown-leave-to {
+	transform: translateY(-100%);
+}
+.slideDown-enter-active,
+.slideDown-leave-active {
+	transition: all .3s;
+}
+
+//路由切换动画
+.slide-right-enter-active,
+.slide-right-leave-active,
+.slide-left-enter-active,
+.slide-left-leave-active {
+  will-change: transform;
+  transition: all .3s;
+  position: absolute;
+}
+.slide-right-enter {
+  transform: translate3d(-100%, 0, 0);
+}
+.slide-right-leave-to {
+  transform: translate3d(100%, 0, 0);
+}
+.slide-left-enter {
+  transform: translate3d(100%, 0, 0);
+}
+.slide-left-leave-to {
+  transform: translate3d(-100%, 0, 0);
+}
