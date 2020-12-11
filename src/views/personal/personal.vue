@@ -64,6 +64,7 @@
 					//清楚vuex
 					this.setToken();
 					this.setUser();
+					console.log('this.token',this.token, 'this.user', this.user)
 					//掉接口登出
 				}).catch(() => {
 					

@@ -7,20 +7,25 @@ import 'lib-flexible';
 //滑动切换路由过渡组件
 import RouteTransition from 'vue-route-transition'
 Vue.use(RouteTransition)
+
 //移动端滑动切换组件
 import VueTouch from 'vue-touch'
 Vue.use(VueTouch, {name: 'v-touch'})
+
 //解决移动端点击事件300ms延迟
 import fastclick from "fastclick"
 fastclick.attach(document.body)
+
 import {
 	doGet,
 	doPost
 } from 'assets/js/http.js'
 Vue.prototype.$get = doGet;
 Vue.prototype.$post = doPost;
+
 import clipper from 'assets/js/clipper.js'
 Vue.use(clipper);
+
 import { 
 	Swipe, 
 	SwipeItem,

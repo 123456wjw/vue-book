@@ -1,45 +1,61 @@
 <template>
 	<div class="find-book">
-		<h3 @click='isshowbox = true'>发现</h3>
-		<ul class='book-tabs' ref='bookTabs'>
-			<li :ref='`tab${index}`' v-for='(tab,index) in tabList' :key='tab.id' @click='active = index' :class='{active:active == index}'>
-				{{tab.name}}
+		<h3 @click="isshowbox = true">发现</h3>
+		<ul class="book-tabs" ref="bookTabs">
+			<li :ref="`tab${index}`" v-for="(tab, index) in tabList" :key="tab.id" @click="active = index" :class="{ active: active == index }">
+				{{ tab.name }}
 			</li>
-			<div :style='{transform: `translateX(${offsetLeft}px)`,width: `${activeTabWidth}px`}' class="tab-line"></div>
+			<div :style="{
+          transform: `translateX(${offsetLeft}px)`,
+          width: `${activeTabWidth}px`,
+        }"
+			 class="tab-line"></div>
 		</ul>
 		<div class="book-pubus">
-			<div class="book-pubus-box" :style='{width: `calc(100% * ${tabList.length})`,transform: `translateX(${moveX}px)`,transition: istransition}'
-			 @touchstart='handlets' @touchmove='handletm' @touchend='handlete'>
-				<van-pull-refresh :ref='`vanPullRefresh${index}`' :style='{width: `calc(100% / ${tabList.length})`,overflowY: isHidden}' class='book-pubu' v-model="pubu.pullLoading"
-				 @refresh="onRefresh(index)" :head-height='128' v-for='(pubu,index) in pubuList' :key='index'>
+			<div class="book-pubus-box" :style="{
+          width: `calc(100% * ${tabList.length})`,
+          transform: `translateX(${moveX}px)`,
+          transition: istransition,
+        }"
+			 @touchstart="handlets" @touchmove="handletm" @touchend="handlete">
+				<van-pull-refresh :ref="`vanPullRefresh${index}`" :style="{
+            width: `calc(100% / ${tabList.length})`,
+            overflowY: isHidden,
+          }"
+				 class="book-pubu" v-model="pubu.pullLoading" @refresh="onRefresh(index)" :head-height="128" v-for="(pubu, index) in pubuList"
+				 :key="index">
 					<template #pulling="props">
 						<img src="../../assets/img/loading.png" :style="{ transform: `scale(${props.distance / 128})` }" />
 					</template>
 
 					<template #loosing>
-						<img src="../../assets/img/loading_active.png" style='animation: infiRotate 1s linear infinite;' />
+						<img src="../../assets/img/loading_active.png" style="animation: infiRotate 1s linear infinite;" />
 					</template>
 
 					<template #loading>
-						<img src="../../assets/img/loading_active.png" style='animation: infiRotate 1s linear infinite;' />
+						<img src="../../assets/img/loading_active.png" style="animation: infiRotate 1s linear infinite;" />
 					</template>
 					<van-list v-model="pubu.listLoading" :finished="pubu.finished" finished-text="我也是有底线的" @load="onLoad(index)">
 						<template #loading>
-							<img src="../../assets/img/loading_active.png" style='animation: infiRotate 1s linear infinite;' />
+							<img src="../../assets/img/loading_active.png" style="animation: infiRotate 1s linear infinite;" />
 						</template>
-						<div class='book-pubu-list'>
+						<div class="book-pubu-list">
 							<ul>
-								<li v-for='leftOne in pubu.leftPubu' :key='leftOne.id'>
-									<img v-lazy="leftOne.src" :style='{height: `${leftOne.h}px`}' v-show='leftOne.h'>
-									<h3>{{leftOne.title}}</h3>
-									<span>{{leftOne.msg}}</span>
+								<li v-for="leftOne in pubu.leftPubu" :key="leftOne.id">
+									<img v-lazy="leftOne.src" :style="{ height: `${leftOne.h}px` }" v-show="leftOne.h" />
+									<div>
+										<h3>{{ leftOne.title }}</h3>
+										<span>{{ leftOne.msg }}</span>
+									</div>
 								</li>
 							</ul>
 							<ul>
-								<li v-for='rightOne in pubu.rightPubu' :key='rightOne.id'>
-									<img v-lazy="rightOne.src" :style='{height: `${rightOne.h}px`}' v-show='rightOne.h'>
-									<h3>{{rightOne.title}}</h3>
-									<span>{{rightOne.msg}}</span>
+								<li v-for="rightOne in pubu.rightPubu" :key="rightOne.id">
+									<img v-lazy="rightOne.src" :style="{ height: `${rightOne.h}px` }" v-show="rightOne.h" />
+									<div>
+										<h3>{{ rightOne.title }}</h3>
+										<span>{{ rightOne.msg }}</span>
+									</div>
 								</li>
 							</ul>
 						</div>
@@ -52,7 +68,7 @@
 
 <script>
 	export default {
-		name: 'findBook',
+		name: "findBook",
 		data() {
 			return {
 				isshowbox: false,
@@ -67,45 +83,45 @@
 				startTime: 0, //触摸开始时间
 				startX: 0, //触摸开始X
 				startY: 0, //触摸开始Y
-				isHidden: 'scroll', //是否可以竖向滑动
+				isHidden: "scroll", //是否可以竖向滑动
 				isScrollY: false, //是否是Y滑动
 				isScrollX: false, //是否X滑动
 				moveX: 0, //X方向上滑动的距离
-				istransition: 'none', //是否开启过渡
+				istransition: "none", //是否开启过渡
 				pageSize: 10, //一次获取几条数据
-				pubuList: [] //瀑布流数组
-			}
+				pubuList: [], //瀑布流数组
+			};
 		},
 		created() {
 			this.initPubuList();
 			this.getTabs();
 			this.innerWidth = window.innerWidth;
-			this.moveMin = this.innerWidth * 2 / 3;
+			this.moveMin = (this.innerWidth * 2) / 3;
 			// this.getPubu(this.active);
 			setTimeout(() => {
-				this.istransition = 'all .3s'
-			},1000)
+				this.istransition = "all .3s";
+			}, 1000);
 		},
 		mounted() {
 			this.activeTabWidth = this.$refs.tab0[0].offsetWidth;
-			console.log('this.activeTabWidth', this.activeTabWidth)
+			console.log("this.activeTabWidth", this.activeTabWidth);
 		},
 		watch: {
 			active: {
 				handler(newval, oldval) {
 					if (newval != oldval) {
 						this.moveX = -this.innerWidth * newval;
-						this.chooseTab()
+						this.chooseTab();
 						if (!this.pubuList[newval].leftPubu.length) {
-							this.getPubu(newval)
+							this.getPubu(newval);
 						}
 					}
-				}
-			}
+				},
+			},
 		},
 		methods: {
 			initPubuList() {
-				for(let i=0;i<8;i++) {
+				for (let i = 0; i < 8; i++) {
 					this.pubuList.push({
 						leftPubu: [],
 						rightPubu: [],
@@ -116,12 +132,12 @@
 						pullLoading: false,
 						listLoading: false,
 						finished: false,
-						scrollTop: 0
-					})
+						scrollTop: 0,
+					});
 				}
 			},
 			handlets(e) {
-				console.log('start', e);
+				console.log("start", e);
 				this.startTime = new Date().getTime();
 				let {
 					pageX,
@@ -130,12 +146,13 @@
 				this.startX = pageX;
 				this.startY = pageY;
 				//滑动开始时关闭过渡
-				this.istransition = 'none';
+				this.istransition = "none";
 			},
-			handletm(e) { //主要针对X方向上滑动处理的方法
+			handletm(e) {
+				//主要针对X方向上滑动处理的方法
 				//如果在Y方向上滑动那直接return
 				if (this.isScrollY) {
-					return
+					return;
 				}
 				let {
 					pageX,
@@ -144,29 +161,35 @@
 				let diffX, diffY;
 				diffX = pageX - this.startX;
 				diffY = pageY - this.startY;
-				//走到这没在Y方向滑动 
-				if (!this.isScrollX) { //如果也没在X上滑动那么代表第一次进到这个方法
+				//走到这没在Y方向滑动
+				if (!this.isScrollX) {
+					//如果也没在X上滑动那么代表第一次进到这个方法
 					this.isScrollY = Math.abs(diffY) - Math.abs(diffX) >= 0 ? true : false;
 					this.isScrollX = !this.isScrollY;
-					if (this.isScrollX) { //如果X方向上滑动多,就要关闭Y方向上滑动
-						this.isHidden = 'hidden';
+					if (this.isScrollX) {
+						//如果X方向上滑动多,就要关闭Y方向上滑动
+						this.isHidden = "hidden";
 					}
-				} else { //如果在X上滑动
+				} else {
+					//如果在X上滑动
 					this.moveX = -this.innerWidth * this.active + diffX;
 				}
 			},
 			handlete(e) {
-				this.istransition = 'all .3s';
-				this.isHidden = 'scroll';
+				this.istransition = "all .3s";
+				this.isHidden = "scroll";
 				this.isScrollX = false;
 				if (this.isScrollY) {
 					this.isScrollY = false;
-					return
+					return;
 				} else {
 					let diffTime = new Date().getTime() - this.startTime;
 					let moveX = e.changedTouches[0].pageX - this.startX;
 					let maxTab = this.tabList.length - 1;
-					if (Math.abs(moveX) >= this.moveMin || (Math.abs(moveX) / diffTime) * 1000 >= this.speedMin) {
+					if (
+						Math.abs(moveX) >= this.moveMin ||
+						(Math.abs(moveX) / diffTime) * 1000 >= this.speedMin
+					) {
 						if (moveX > 0) {
 							this.active = this.active !== 0 ? this.active - 1 : 0;
 						} else {
@@ -192,7 +215,7 @@
 					clearInterval(this.myAnimateTimer);
 					this.myAnimateTimer = null;
 				}
-				return current
+				return current;
 			},
 			// 选择tab
 			chooseTab() {
@@ -200,125 +223,140 @@
 				this.getTabWidth(this.active);
 				this.offsetLeft = this.$refs[`tab${this.active}`][0].offsetLeft;
 				this.myAnimateTimer = setInterval(() => {
-					current = this.myAnimate(current, this.offsetLeft - this.innerWidth / 2 + this.activeTabWidth / 2);
-				}, 10)
+					current = this.myAnimate(
+						current,
+						this.offsetLeft - this.innerWidth / 2 + this.activeTabWidth / 2
+					);
+				}, 10);
 			},
 			//获取tab
 			getTabs() {
-				let tabList = require('./tabList.json');
+				let tabList = require("./tabList.json");
 				this.tabList = tabList;
 			},
 			// 获取瀑布流数据
-			getPubu(active,refresh = 'norefresh') {
-				console.log(this.pubuList);
-				setTimeout(() => {
-					this.$post('findBook',{type: active,pageSize: this.pageSize,currentPage: this.pubuList[active].currentPage}).then(res => {
-						console.log(res);
-						if(res.code == 0) {
-							this.pubuList[active].newPubuList = res.result;
-							this.loadImg(res.result,active,refresh);
-							this.pubuList[active].finished = res.finished
-						}
-					})
-				},1000)
+			getPubu(active, refresh = "norefresh") {
+				this.$post("findBook", {
+					type: active,
+					pageSize: this.pageSize,
+					currentPage: this.pubuList[active].currentPage,
+				}).then((res) => {
+					if (res.code == 0) {
+						this.pubuList[active].newPubuList = res.result;
+						this.loadImg(res.result, active, refresh);
+						this.pubuList[active].finished = res.finished;
+					}
+
+				});
 			},
 			//加载图片
-			loadImg(imgList,active,refresh) {
+			loadImg(imgList, active, refresh) {
 				let length = 0;
 				let currentPubu = this.pubuList[active];
-				// let dpr = document.documentElement.getAttribute('data-dpr');
 				imgList.forEach((item, index) => {
-					let img = new Image()
+					let img = new Image();
 					img.src = item.src;
 					img.onload = () => {
-						// imgList[length].h = dpr * img.height;
-						imgList[length].h = img.height;
+						imgList[index].h = img.height / (img.width / (this.innerWidth / 2 - (20 / 75 * this.innerWidth / 10)))
 						length++;
 						if (length == imgList.length) {
-							if(refresh == 'refresh') { //如果时下拉刷新
+							if (refresh == "refresh") {
+								//如果时下拉刷新
 								currentPubu.leftHeight = currentPubu.rightHeight = 0;
 							}
-							this.handleNewPubuList(imgList,currentPubu.leftHeight,currentPubu.rightHeight,(resultList,leftH,rightH) => {
-								currentPubu.currentPage++
-								currentPubu.leftHeight = leftH;
-								currentPubu.rightHeight = rightH;
-								if(refresh == 'refresh') { //如果时下拉刷新
-									currentPubu.leftPubu = resultList.pubuL;
-									currentPubu.rightPubu = resultList.pubuR;
-									currentPubu.pullLoading = false;
-								} else {
-									currentPubu.leftPubu.push(...resultList.pubuL);
-									currentPubu.rightPubu.push(...resultList.pubuR);
-									currentPubu.listLoading = false;
+							this.handleNewPubuList(
+								imgList,
+								currentPubu.leftHeight,
+								currentPubu.rightHeight,
+								(resultList, leftH, rightH) => {
+									currentPubu.currentPage++;
+									currentPubu.leftHeight = leftH;
+									currentPubu.rightHeight = rightH;
+									if (refresh == "refresh") {
+										//如果时下拉刷新
+										currentPubu.leftPubu = resultList.pubuL;
+										currentPubu.rightPubu = resultList.pubuR;
+										currentPubu.pullLoading = false;
+									} else {
+										currentPubu.leftPubu.push(...resultList.pubuL);
+										currentPubu.rightPubu.push(...resultList.pubuR);
+										currentPubu.listLoading = false;
+									}
+									currentPubu.newPubuList = [];
 								}
-								currentPubu.newPubuList = [];
-								console.log(currentPubu)
-							});
+							);
 						}
-					}
-				})
+					};
+				});
 			},
 			//处理加载好的图片
-			handleNewPubuList(imgList,leftH,rightH,callBack) {
+			handleNewPubuList(imgList, leftH, rightH, callBack) {
 				let resultList = {
 					pubuL: [],
-					pubuR: []
-				}
+					pubuR: [],
+				};
 				imgList.forEach((item) => {
-					if(leftH <= rightH) {
-						resultList.pubuL.push(item)
-						leftH += item.h;
+					if (parseInt(leftH) <= parseInt(rightH)) {
+						resultList.pubuL.push(item);
+						if(leftH === 0) {
+							leftH += 20 / 75 * this.innerWidth / 10
+						}
+						leftH += item.h + ((100 + 20 ) / 75 * this.innerWidth / 10);
 					} else {
-						resultList.pubuR.push(item)
-						rightH += item.h;
+						resultList.pubuR.push(item);
+						if(rightH === 0) {
+							rightH += 20 / 75 * this.innerWidth / 10
+						}
+						rightH += item.h + ((100 + 20 ) / 75 * this.innerWidth / 10);
 					}
-				})
-				callBack(resultList,leftH,rightH);
+				});
+				callBack(resultList, leftH, rightH);
 			},
 			//下拉刷新
 			onRefresh(index) {
-				if(this.active != index) {
-					return
+				if (this.active != index) {
+					return;
 				}
 				this.pubuList[index].currentPage = 0;
-				this.getPubu(index,'refresh');
+				this.getPubu(index, "refresh");
 			},
 			//上拉加载
 			onLoad(index) {
-				if(this.active != index) {
-					return
+				if (this.active != index) {
+					return;
 				}
-				console.log('开始加载')
 				this.getPubu(index);
-				this.$refs[`vanPullRefresh${this.active}`]
 			},
 		},
-		beforeRouteEnter(to,from,next) {
-			next(vm => {
-				vm.pubuList.forEach((item,index) => {
-					vm.$refs[`vanPullRefresh${index}`][0].$el.scrollTop = item.scrollTop
-				})
-			})
+		beforeRouteEnter(to, from, next) {
+			next((vm) => {
+				vm.pubuList.forEach((item, index) => {
+					setTimeout(() => {
+						vm.$refs[`vanPullRefresh${index}`][0].$el.scrollTo = (0, item.scrollTop);
+					}, 0)
+				});
+			});
 		},
-		beforeRouteLeave(to,from,next) {
-			this.pubuList.forEach((item,index) => {
+		beforeRouteLeave(to, from, next) {
+			this.pubuList.forEach((item, index) => {
 				item.scrollTop = this.$refs[`vanPullRefresh${index}`][0].$el.scrollTop;
-			})
-			next()
-		}
-	}
+			});
+			next();
+		},
+	};
 </script>
 
-<style lang='scss'>
-	@import '../../assets/scss/baseColor';
-	@import '../../assets/scss/mixin';
-	@import '../../assets/scss/infiRotate';
+<style lang="scss">
+	@import "../../assets/scss/baseColor";
+	@import "../../assets/scss/mixin";
+	@import "../../assets/scss/infiRotate";
 
 	.find-book {
 		height: 100%;
 		width: 100%;
 		display: flex;
 		flex-direction: column;
+
 		>h3 {
 			text-align: center;
 			padding: 20px;
@@ -353,7 +391,7 @@
 				height: 4px;
 				background-color: $base-color;
 				border-radius: 3px;
-				transition: all .3s;
+				transition: all 0.3s;
 			}
 		}
 
@@ -394,36 +432,49 @@
 				.book-pubu {
 					height: 100%;
 					background-color: $base-bg-color;
+
 					.book-pubu-list {
 						display: flex;
 						height: 100%;
+
 						>ul {
 							width: 50%;
 							box-sizing: border-box;
+
 							>li {
 								border-radius: 20px;
 								margin: 20px 10px;
 								background-color: white;
 								overflow: hidden;
-								box-shadow: 6px 6px 14px 0 rgba(26,26,26,.06);
+								box-shadow: 6px 6px 14px 0 rgba(26, 26, 26, 0.06);
+
 								>img {
 									width: 100%;
 								}
-								>h3 {
-									padding: 10px 10px 5px;
-									box-sizing: border-box;
+
+								>div {
+									
+									height: 100px;
+									
+									>h3 {
+										padding: 10px 10px 5px;
+										box-sizing: border-box;
+									}
+
+									>span {
+										padding: 5px 10px 10px;
+										@include ft-size(14);
+										display: inline-block;
+										width: 100%;
+										white-space: nowrap;
+										text-overflow: ellipsis;
+										overflow: hidden;
+										box-sizing: border-box;
+										color: $base-font-color;
+									}
 								}
-								>span {
-									padding: 5px 10px 10px;
-									@include ft-size(14);
-									display: inline-block;
-									width: 100%;
-									white-space: nowrap;
-									text-overflow: ellipsis;
-									overflow: hidden;
-									box-sizing: border-box;
-									color: $base-font-color;
-								}
+
+
 							}
 						}
 					}

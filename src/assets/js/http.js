@@ -13,7 +13,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
 	config => {
 		token = loginState.state.token;
-		console.log('token',token);
+		console.log('loginState', loginState)
 		if (token) {
 			// 这里将token设置到headers中
 			config.headers.Authorization = token;
@@ -30,7 +30,6 @@ instance.interceptors.response.use(
 		return response;
 	},
 	error => {
-		console.log(error)
 		if (error.response) {
 			switch (error.response.status) {
 				case 400:
@@ -90,7 +89,6 @@ export function doGet(urll) {
 }
 
 export function doPost(urll, params) {
-	console.log('urll', urll);
 	return new Promise((resolve, reject) => {
 		instance({
 			method: 'post',

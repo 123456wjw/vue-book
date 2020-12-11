@@ -1,6 +1,6 @@
 const state = {
-	token: window.localStorage.getItem('token') || '',
-	user: JSON.parse(window.localStorage.getItem('user')) || {}
+	token: localStorage.getItem('token') || '',
+	user: JSON.parse(localStorage.getItem('user')) || Object.create(null)
 }
 const getters = {
 	userId(state) {
@@ -8,16 +8,11 @@ const getters = {
 	}
 }
 const mutations = {
-	setToken(state,token='') {
+	setToken(state, token = '') {
 		state.token = token;
 	},
-	setUser(state,user={}) {
+	setUser(state, user = Object.create(null)) {
 		state.user = user;
-	}
-}
-const actions = {
-	_setToken({commit,dispatch,state},params) {
-		console.log(params)
 	}
 }
 export default {
@@ -25,5 +20,4 @@ export default {
 	state,
 	getters,
 	mutations,
-	actions
 }

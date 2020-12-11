@@ -83,11 +83,13 @@
 							精品好书
 						</h3>
 					</div>
-					<div :class='{fixed: sortBox.isFixed}' :style='[{top: sortBox.isFixed?topSearch.offsetHeight+"px":""},sortTop]' class="sort" ref='sortBox' @click='clickSort'>
+					<div :class='{fixed: sortBox.isFixed}' :style='[{top: sortBox.isFixed?topSearch.offsetHeight+"px":""},sortTop]'
+					 class="sort" ref='sortBox' @click='clickSort'>
 						<div class="sort-method">
-							<span class='zonghe' :style='{fontWeight: `${(currentSort.sortCode != "5" && currentSort.sortCode != "6")?"700":"400"}`}'>{{currentSort.sortValue}}<img :style='{transform: `${isShowZongHe?"rotate(90deg)":""}`}' class='zonghe' src='./arrow@2x.png'></span>
+							<span class='zonghe' :style='{fontWeight: `${(currentSort.sortCode != "5" && currentSort.sortCode != "6")?"700":"400"}`}'>{{currentSort.sortValue}}<img
+								 :style='{transform: `${isShowZongHe?"rotate(90deg)":""}`}' class='zonghe' src='./arrow@2x.png'></span>
 							<span class='pingfen' data-sortValue='5' :style='currentSort.sortCode == "5" ? "font-weight: 700;" : "400"'>评分高</span>
-							<span class='yuedu' data-sortValue='6'  :style='currentSort.sortCode == "6" ? "font-weight: 700;" : "400"'>阅读数高</span>
+							<span class='yuedu' data-sortValue='6' :style='currentSort.sortCode == "6" ? "font-weight: 700;" : "400"'>阅读数高</span>
 						</div>
 						<div class="sort-choose">
 							<span :style='choosedList.length ? "font-weight: 700;" : "400"' class='shaixuan'>筛选<img class='shaixuan' src="./choose.png"></span>
@@ -109,7 +111,8 @@
 								<transition name='slideDown'>
 									<ul v-show="isShowShaiXuan">
 										<div>类别(可多选)</div>
-										<li data-notHide='true' :class='{active: choosedList.includes(index)}' @click='addOneShaixuan(index)' v-for='(item,index) in chooseList' :key='index'>{{item}}</li>
+										<li data-notHide='true' :class='{active: choosedList.includes(index)}' @click='addOneShaixuan(index)' v-for='(item,index) in chooseList'
+										 :key='index'>{{item}}</li>
 										<button data-notHide='true' @click='emptyChoosedList'>清空</button>
 										<button @click='choosedDone'>完成</button>
 									</ul>
@@ -117,7 +120,8 @@
 							</div>
 						</transition>
 					</div>
-					<van-list :style='{marginTop: `${sortBox.isFixed ? sortBox.offsetHeight : 0}px`}' v-model="loading" :finished="finished" finished-text="我也是有底线的" @load="onLoad">
+					<van-list :style='{marginTop: `${sortBox.isFixed ? sortBox.offsetHeight : 0}px`}' v-model="loading" :finished="finished"
+					 finished-text="我也是有底线的" @load="onLoad">
 						<template #loading>
 							<img src="../../assets/img/loading_active.png" style='animation: infiRotate 1s linear infinite;' />
 						</template>
@@ -140,14 +144,11 @@
 </template>
 
 <script>
-	import { SETLOADING, MUTATIONA, MUTATIONB } from 'store/modules/loading/mutation-types'
-	import { mapState,mapGetters,mapMutations,mapActions } from 'vuex'
 	import indexSearch from '../indexSearch/indexSearch'
 	export default {
 		name: 'index',
 		data() {
 			return {
-				ifShowSearch: false,
 				//顶部搜索框
 				topSearch: {
 					offsetHeight: 0,
@@ -175,21 +176,20 @@
 					sortCode: '1',
 					sortValue: '综合排序'
 				},
-				isShowZongHe: false,//是否显示排序列表
-				isShowShaiXuan: false,//是否显示筛选列表
-				sortListTop: 0,//显示排序列表时的位置
-				chooseList: ['校园','恐怖','惊悚','科幻','修仙','言情','偶像','青春'],//筛选的选项
-				choosedList: [],//筛选中选中的
-				pageSize: 10,//每一页数据
-				currentPage: 0,//当前页数
-				scrollTop: 0,//滚动距离
+				isShowZongHe: false, //是否显示排序列表
+				isShowShaiXuan: false, //是否显示筛选列表
+				sortListTop: 0, //显示排序列表时的位置
+				chooseList: ['校园', '恐怖', '惊悚', '科幻', '修仙', '言情', '偶像', '青春'], //筛选的选项
+				choosedList: [], //筛选中选中的
+				pageSize: 10, //每一页数据
+				currentPage: 0, //当前页数
+				scrollTop: 0, //滚动距离
 			}
 		},
 		components: {
 			indexSearch
 		},
 		created() {
-			console.log('index-created')
 			for (let i = 0; i < 8; i++) {
 				this.classifyList.push({
 					id: i,
@@ -213,31 +213,14 @@
 				offsetHeight: this.$refs.sortBox.offsetHeight,
 				isFixed: false
 			}
-			// console.log("this.$store.state.loading.loading",this.$store.state.loading.loading);
-			// console.log('this.mapLoading',this.mapLoading)
-			// console.log("this.$store.getters['loading/trueState']",this.$store.getters['loading/trueState']);
-			// console.log('this.maptrueState',this.maptrueState);
-			// console.log("this.$store.getters['loading/fngetters'](5)",this.$store.getters['loading/fngetters'](5));
-			// console.log('this.mapfngetters',this.mapfngetters(5));
-			this.$store.dispatch('loading/actionB',{name: '我是actionB'}).then(res => {
-				console.log('res',res)
-			})
-			console.log("this.mapActionB({name: '我是actionB'})",this.mapActionB({name: '我是actionB'}));
 		},
 		computed: {
-			...mapState('loading',{
-				mapLoading: 'loading'
-			}),
-			...mapGetters('loading',{
-				maptrueState: 'trueState',
-				mapfngetters: 'fngetters'
-			}),
 			currentSortCode() {
 				return this.currentSort.sortCode
 			}
 		},
 		watch: {
-			currentSortCode(newCode,oldCode) {
+			currentSortCode(newCode, oldCode) {
 				this.currentPage = 0;
 				this.getBookList('refresh')
 				let scrollTo = this.sortBox.offsetTop - this.topSearch.offsetHeight;
@@ -247,29 +230,27 @@
 			}
 		},
 		methods: {
-			...mapMutations('loading',{
-				mapMutationA: MUTATIONA,
-				mapMutationB: MUTATIONA
-			}),
-			...mapActions('loading',{
-				mapActionA: 'actionA',
-				mapActionB: 'actionB'
-			}),
 			handleScroll() {
 				this.topSearch.isFixed = this.$el.scrollTop > this.topSearch.offsetTop ? true : false;
 				this.sortBox.isFixed = this.$el.scrollTop > this.sortBox.offsetTop - this.topSearch.offsetHeight ? true : false;
 			},
 			getDetial(id) {
-				this.$router.push({name: 'detailBook',query: {id: id}});
+				this.$router.push({
+					name: 'detailBook',
+					query: {
+						id: id
+					}
+				});
 			},
+			// fixed会当祖先元素transform不为none时失效   所以将定位瞬间切为absolute  达到迷惑的效果
 			judgeScroll() {
-				if(this.scrollTop > this.topSearch.offsetTop) {
+				if (this.scrollTop > this.topSearch.offsetTop) {
 					this.searchTop = {
 						position: 'absolute',
 						top: this.scrollTop + 'px'
 					}
 				}
-				if(this.scrollTop > this.sortBox.offsetTop) {
+				if (this.scrollTop > this.sortBox.offsetTop) {
 					this.sortTop = {
 						position: 'absolute',
 						top: this.scrollTop + this.topSearch.offsetHeight + 'px'
@@ -282,29 +263,29 @@
 				if (scrollTo > this.$el.scrollTop) {
 					this.$el.scrollTo(0, scrollTo)
 				}
-				if(!this.sortListTop) {
-					this.sortListTop =  this.sortBox.offsetHeight + this.topSearch.offsetHeight;
+				if (!this.sortListTop) {
+					this.sortListTop = this.sortBox.offsetHeight + this.topSearch.offsetHeight;
 				}
-				if(e.target.dataset.sortvalue) { //如果有这个值说明可以直接进行排序
+				if (e.target.dataset.sortvalue) { //如果有这个值说明可以直接进行排序
 					let sv = e.target.dataset.sortvalue; //获取sortValue
 					this.currentSort.sortCode = sv;
-					if(sv != '5' && sv != '6') {
+					if (sv != '5' && sv != '6') {
 						this.currentSort.sortValue = e.target.innerText;
 					}
 				}
-				if(this.isShowZongHe) { //如果排序显示 对于排序来说只要他显示了那么不管点在哪里 肯定要隐藏
+				if (this.isShowZongHe) { //如果排序显示 对于排序来说只要他显示了那么不管点在哪里 肯定要隐藏
 					this.isShowZongHe = false;
 				} else { //如果没显示
-					if(e.target.className == 'zonghe') { //如果点在了综合排序上
+					if (e.target.className == 'zonghe') { //如果点在了综合排序上
 						this.isShowZongHe = true;
 					}
 				}
-				if(this.isShowShaiXuan) { //如果筛选显示，点在每一个筛选项和清空不隐藏 其他都隐藏
-					if(e.target.dataset.nothide !== "true") { //代表没点在每一个选项和清空上
+				if (this.isShowShaiXuan) { //如果筛选显示，点在每一个筛选项和清空不隐藏 其他都隐藏
+					if (e.target.dataset.nothide !== "true") { //代表没点在每一个选项和清空上
 						this.isShowShaiXuan = false;
 					}
 				} else { //如果没显示
-					if(e.target.className == 'shaixuan') { //如果点在了筛选上
+					if (e.target.className == 'shaixuan') { //如果点在了筛选上
 						this.isShowShaiXuan = true;
 					}
 				}
@@ -314,8 +295,8 @@
 				let flag = this.choosedList.findIndex(value => {
 					return value == itemIndex
 				})
-				if(flag !== -1) {
-					this.choosedList.splice(flag,1);
+				if (flag !== -1) {
+					this.choosedList.splice(flag, 1);
 				} else {
 					this.choosedList.push(itemIndex)
 				}
@@ -331,17 +312,16 @@
 				this.getBookList('refresh')
 			},
 			// 获取图书
-			getBookList(refresh='norefresh') {
+			getBookList(refresh = 'norefresh') {
 				let params = {
 					code: this.currentSort.sortCode,
 					choosedList: this.choosedList,
 					pageSize: this.pageSize,
 					currentPage: this.currentPage
 				}
-				this.$post('sorkBook',params).then(res => {
-					console.log(res);
-					if(res.code == 0) {
-						if(refresh === 'refresh') { //如果是下拉刷新
+				this.$post('sorkBook', params).then(res => {
+					if (res.code == 0) {
+						if (refresh === 'refresh') { //如果是下拉刷新
 							this.bookList = [];
 							this.isLoading = false;
 						} else {
@@ -371,12 +351,15 @@
 				}, 1000);
 			},
 		},
-		beforeRouteEnter(to,from,next) {
+		beforeRouteEnter(to, from, next) {
 			next(vm => {
-				vm.$el.scrollTop = vm.scrollTop;
+				// 用定时器是为了等组件加载完再执行	
+				setTimeout(() => {	
+					vm.$el.scrollTop = vm.scrollTop;
+				}, 0)
 			})
 		},
-		beforeRouteLeave(to,from,next) {
+		beforeRouteLeave(to, from, next) {
 			this.scrollTop = this.$el.scrollTop;
 			this.judgeScroll();
 			next()
@@ -389,6 +372,7 @@
 	@import '../../assets/scss/mixin';
 	@import '../../assets/scss/flexCenter';
 	@import '../../assets/scss/infiRotate';
+
 	.index {
 		height: 100%;
 		width: 100%;
@@ -458,6 +442,7 @@
 		background-position: 10px center;
 		@include ft-size(16);
 		color: $base-font-color;
+
 		&.fixed {
 			position: fixed;
 			top: 0;
@@ -596,15 +581,19 @@
 			height: 82px;
 			padding: 20px 0;
 			box-sizing: border-box;
+
 			&.fixed {
 				position: fixed;
 				width: calc(100% - 40px);
 			}
+
 			.sort-method {
 				flex: auto;
+
 				>span {
 					margin-right: 40px;
 					padding: 20px 0;
+
 					>img {
 						width: 16px;
 						height: 16px;
@@ -618,6 +607,7 @@
 			.sort-choose {
 				>span {
 					padding: 20px 0;
+
 					>img {
 						width: 32px;
 						height: 32px;
@@ -632,7 +622,7 @@
 					color: $base-font-color;
 				}
 			}
-			
+
 			.sort-methodList,
 			.sort-chooseList {
 				overflow: hidden;
@@ -640,34 +630,40 @@
 				left: 0;
 				right: 0;
 				position: fixed;
-				background-color: rgba(0,0,0,.3); 
+				background-color: rgba(0, 0, 0, .3);
 			}
+
 			.sort-methodList {
 				>ul {
 					>li {
-						border-bottom: 1PX solid #ccc; /*no*/
-						padding:  20px;
+						border-bottom: 1PX solid #ccc;
+						/*no*/
+						padding: 20px;
 						background-color: white;
 						color: $base-font-color;
 						@include ft-size(14);
+
 						&.active {
 							color: $base-color;
 						}
 					}
 				}
-				
+
 			}
+
 			.sort-chooseList {
 				>ul {
 					display: flex;
 					flex-wrap: wrap;
 					background-color: white;
+
 					>div {
 						width: 100%;
 						padding: 20px;
 						box-sizing: border-box;
 						@include ft-size(16);
 					}
+
 					>li {
 						width: 30%;
 						box-sizing: border-box;
@@ -677,21 +673,26 @@
 						@include ft-size(15);
 						padding: 20px 0;
 						margin: 10px;
+
 						&.active {
 							background-color: $base-color;
 							color: white;
 						}
 					}
+
 					>button {
 						width: 50%;
 						@include ft-size(16);
 						text-align: center;
 						padding: 30px 0;
+
 						&:nth-of-type(1) {
 							background-color: white;
 							box-sizing: border-box;
-							border-top: 1PX solid #ccc;/*no*/
+							border-top: 1PX solid #ccc;
+							/*no*/
 						}
+
 						&:nth-of-type(2) {
 							color: white;
 							background-color: $base-color;

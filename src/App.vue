@@ -19,27 +19,19 @@
 		data() {
 			return {
 				transitionName: 'slide-right',
-				tarbartransition: '',
 				keepAliveRoute: ['index','findBook','personal']
 			}
-		},
-		created() {
-			setTimeout(() => {
-				this.tarbartransition = 'slide-left';
-			},2000);
 		},
 		components: {
 			tabBar
 		},
 		watch: {
 			'$route'(to,from) {
-				console.log('to',to,'from',from);
 				if(to.meta.index > from.meta.index) {
 					this.transitionName = 'slide-left';
 				} else {
 					this.transitionName = to.meta.index < from.meta.index ? 'slide-right' : ''
 				}
-				console.log('this.transitionName',this.transitionName);
 			}
 		},
 		methods: {
