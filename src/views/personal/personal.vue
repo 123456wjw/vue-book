@@ -36,6 +36,7 @@
 <script>
 	import { Dialog } from 'vant';
 	import { mapState,mapMutations } from 'vuex';
+	import { clearLoginState } from 'assets/js/utils'
 	export default {
 		name: 'personal',
 		data() {
@@ -58,13 +59,7 @@
 				Dialog.confirm({
 				  message: '确定要退出登录吗',
 				}).then(() => {
-					//清空本地缓存
-					window.localStorage.removeItem('token');
-					window.localStorage.removeItem('user');
-					//清楚vuex
-					this.setToken();
-					this.setUser();
-					console.log('this.token',this.token, 'this.user', this.user)
+					clearLoginState()
 					//掉接口登出
 				}).catch(() => {
 					

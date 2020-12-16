@@ -13,8 +13,8 @@ function resolve(dir) {
 }
 
 const vueConfig = {
-  publicPath: process.env.NODE_ENV === "production" ? "./" : "/",
-  productionSourceMap: process.env.NODE_ENV === "production" ? false : true,
+  publicPath: process.env.NODE_ENV === "development" ? "/" : "./",
+  productionSourceMap: process.env.NODE_ENV === "development" ? true : false,
   // 配置路径别名
   chainWebpack: (config) => {
     config.resolve.alias
@@ -35,7 +35,7 @@ const vueConfig = {
     },
     proxy: {
       "/api": {
-        target: "http://localhost:3000/",
+        target: process.env.VUE_APP_SERVER_URL,
         changeOrigin: true,
         pathRewrite: {
           "^/api": "",

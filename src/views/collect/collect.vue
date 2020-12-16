@@ -35,6 +35,7 @@
 		mapState,
 		mapMutations
 	} from 'vuex'
+	import { clearLoginState } from 'assets/js/utils'
 	import { Dialog } from 'vant';
 	export default {
 		data() {
@@ -92,11 +93,7 @@
 						this.collectList = res.collectList;
 					}
 				}).catch(err => {
-					console.log('err',err);
 					this.setLoading(false);
-					Dialog.alert({
-					  message: err.message,
-					})
 				})
 			},
 			goBack() {

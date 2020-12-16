@@ -1,8 +1,11 @@
 import loginState from 'store/modules/loginState/loginState'
-let token;
 import axios from "axios"
+import { Dialog } from 'vant'
+import { clearLoginState } from 'assets/js/utils'
+
+let token;
 const instance = axios.create({
-	baseURL: process.env.NODE_ENV === 'development' ? '/api' : '',
+	baseURL: process.env.NODE_ENV === 'development' ? '/api' : process.env.VUE_APP_SERVER_URL,
 	timeout: 1000 * 120,
 	headers: {
 		"accept": "application/json",
@@ -13,7 +16,6 @@ const instance = axios.create({
 instance.interceptors.request.use(
 	config => {
 		token = loginState.state.token;
-		console.log('loginState', loginState)
 		if (token) {
 			// 这里将token设置到headers中
 			config.headers.Authorization = token;
@@ -36,7 +38,12 @@ instance.interceptors.response.use(
 					error.message = '400 请求错误'
 					break
 				case 401:
-					error.message = '401 token验证失败'
+				console.log('error', error)
+					error.message = '登录超时,请重新登录'
+					Dialog.alert({
+					  message: error.message,
+					})
+					clearLoginState()
 					break
 				case 403:
 					error.message = '403 拒绝访问'
