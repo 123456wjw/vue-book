@@ -42,7 +42,7 @@
 						<div class="book-pubu-list">
 							<ul>
 								<li v-for="leftOne in pubu.leftPubu" :key="leftOne.id">
-									<img v-lazy="leftOne.src" :style="{ height: `${leftOne.h}px` }" v-show="leftOne.h" />
+									<img v-lazy="leftOne.src" v-show="leftOne.h" />
 									<div>
 										<h3>{{ leftOne.title }}</h3>
 										<span>{{ leftOne.msg }}</span>
@@ -51,7 +51,7 @@
 							</ul>
 							<ul>
 								<li v-for="rightOne in pubu.rightPubu" :key="rightOne.id">
-									<img v-lazy="rightOne.src" :style="{ height: `${rightOne.h}px` }" v-show="rightOne.h" />
+									<img v-lazy="rightOne.src" v-show="rightOne.h" />
 									<div>
 										<h3>{{ rightOne.title }}</h3>
 										<span>{{ rightOne.msg }}</span>
@@ -97,7 +97,6 @@
 			this.getTabs();
 			this.innerWidth = window.innerWidth;
 			this.moveMin = (this.innerWidth * 2) / 3;
-			// this.getPubu(this.active);
 			setTimeout(() => {
 				this.istransition = "all .3s";
 			}, 1000);
@@ -257,7 +256,7 @@
 					let img = new Image();
 					img.src = item.src;
 					img.onload = () => {
-						imgList[index].h = img.height / (img.width / (this.innerWidth / 2 - (20 / 75 * this.innerWidth / 10)))
+						imgList[index].h = img.height
 						length++;
 						if (length == imgList.length) {
 							if (refresh == "refresh") {
