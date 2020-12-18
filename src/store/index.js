@@ -10,6 +10,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import loginState from "./modules/loginState/loginState";
 import loading from "./modules/loading/loading";
+import typeList from './modules/typeList/typeList'
 
 Vue.use(Vuex);
 
@@ -17,5 +18,6 @@ export default new Vuex.Store({
   modules: {
     loginState,
     loading,
+	typeList
   },
 });
