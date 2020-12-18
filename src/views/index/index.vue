@@ -24,9 +24,9 @@
 			<div class="index-main">
 				<!-- 首页分类 -->
 				<ul class="classify" ref='classify'>
-					<li class="classify-item" v-for='(classify,index) in classifyList' :key='classify.id'>
+					<li class="classify-item" v-for='(type,index) in typeList' :key='type.id'>
 						<div class='classify-item-bg' :class='"classify-item-bg"+index'></div>
-						<span class='classify-item-span'>{{classify.name}}</span>
+						<span class='classify-item-span'>{{type.name}}</span>
 					</li>
 				</ul>
 				<div class="hotRecommend" ref='hotRecommend'>
@@ -86,10 +86,10 @@
 					<div :class='{fixed: sortBox.isFixed}' :style='[{top: sortBox.isFixed?topSearch.offsetHeight+"px":""},sortTop]'
 					 class="sort" ref='sortBox' @click='clickSort'>
 						<div class="sort-method">
-							<span class='zonghe' :style='{fontWeight: `${(currentSort.sortCode != "5" && currentSort.sortCode != "6")?"700":"400"}`}'>{{currentSort.sortValue}}<img
+							<span class='zonghe' :style='{fontWeight: `${(currentSort.value != "rate" && currentSort.value != "read_count")?"700":"400"}`}'>{{currentSort.label}}<img
 								 :style='{transform: `${isShowZongHe?"rotate(90deg)":""}`}' class='zonghe' src='./arrow@2x.png'></span>
-							<span class='pingfen' data-sortValue='5' :style='currentSort.sortCode == "5" ? "font-weight: 700;" : "400"'>评分高</span>
-							<span class='yuedu' data-sortValue='6' :style='currentSort.sortCode == "6" ? "font-weight: 700;" : "400"'>阅读数高</span>
+							<span class='pingfen' data-sortValue='rate' :style='currentSort.value == "rate" ? "font-weight: 700;" : "400"'>评分高</span>
+							<span class='yuedu' data-sortValue='read_count' :style='currentSort.value == "read_count" ? "font-weight: 700;" : "400"'>阅读数高</span>
 						</div>
 						<div class="sort-choose">
 							<span :style='choosedList.length ? "font-weight: 700;" : "400"' class='shaixuan'>筛选<img class='shaixuan' src="./choose.png"></span>
@@ -98,10 +98,9 @@
 							<div class='sort-methodList' :style='{top: `${this.sortListTop}px`}' v-show="isShowZongHe">
 								<transition name='slideDown'>
 									<ul v-show="isShowZongHe">
-										<li class='sortOne' data-sortValue='1' :class='{active: currentSort.sortCode == "1"}'>综合排序</li>
-										<li class='sortOne' data-sortValue='2' :class='{active: currentSort.sortCode == "2"}'>收藏最多</li>
-										<li class='sortOne' data-sortValue='3' :class='{active: currentSort.sortCode == "3"}'>发布时间早到晚</li>
-										<li class='sortOne' data-sortValue='4' :class='{active: currentSort.sortCode == "4"}'>发布时间晚到早</li>
+										<li class='sortOne' data-sortValue='comprehensive' :class='{active: currentSort.value == "comprehensive"}'>综合排序</li>
+										<li class='sortOne' data-sortValue='collect' :class='{active: currentSort.value == "collect"}'>收藏最多</li>
+										<li class='sortOne' data-sortValue='rate_count' :class='{active: currentSort.value == "rate_count"}'>评论数量最多</li>
 									</ul>
 								</transition>
 							</div>
@@ -111,8 +110,8 @@
 								<transition name='slideDown'>
 									<ul v-show="isShowShaiXuan">
 										<div>类别(可多选)</div>
-										<li data-notHide='true' :class='{active: choosedList.includes(index)}' @click='addOneShaixuan(index)' v-for='(item,index) in chooseList'
-										 :key='index'>{{item}}</li>
+										<li data-notHide='true' :class='{active: choosedList.includes(item.type)}' @click='addOneShaixuan(item.type)'
+										 v-for='item in typeList' :key='item.id'>{{item.name}}</li>
 										<button data-notHide='true' @click='emptyChoosedList'>清空</button>
 										<button @click='choosedDone'>完成</button>
 									</ul>
@@ -145,6 +144,14 @@
 
 <script>
 	import indexSearch from '../indexSearch/indexSearch'
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex'
+	import {
+		SETTYPELIST
+	} from 'store/modules/typeList/mutationTypes.js'
+
 	export default {
 		name: 'index',
 		data() {
@@ -156,15 +163,13 @@
 					isFixed: false
 				},
 				searchTop: '', // 顶部搜索框位置
-				sortTop: '', //排序位置
 				// 排序盒子
 				sortBox: {
 					offsetTop: 0,
 					offsetHeight: 0,
 					isFixed: false
 				},
-				// 分类数组
-				classifyList: [],
+				sortTop: '', //排序位置
 				// 书本数组
 				bookList: [],
 				//下拉刷新
@@ -173,16 +178,15 @@
 				loading: false,
 				finished: false,
 				currentSort: { //当前排序方式
-					sortCode: '1',
-					sortValue: '综合排序'
+					label: '综合排序',
+					value: 'collect'
 				},
 				isShowZongHe: false, //是否显示排序列表
 				isShowShaiXuan: false, //是否显示筛选列表
 				sortListTop: 0, //显示排序列表时的位置
-				chooseList: ['校园', '恐怖', '惊悚', '科幻', '修仙', '言情', '偶像', '青春'], //筛选的选项
 				choosedList: [], //筛选中选中的
 				pageSize: 10, //每一页数据
-				currentPage: 0, //当前页数
+				currentPage: 1, //当前页数
 				scrollTop: 0, //滚动距离
 			}
 		},
@@ -190,38 +194,26 @@
 			indexSearch
 		},
 		created() {
-			for (let i = 0; i < 8; i++) {
-				this.classifyList.push({
-					id: i,
-					name: `分类${i}`
-				})
-			}
 			this.getBookList();
+			this.getSortType()
 		},
 		mounted() {
-			let {
-				offsetHeight,
-				offsetTop
-			} = this.$refs.topSearch;
 			this.topSearch = {
-				offsetHeight,
-				offsetTop,
-				isFixed: false
-			}
-			this.sortBox = {
-				offsetTop: this.$refs.sortBox.offsetTop,
-				offsetHeight: this.$refs.sortBox.offsetHeight,
+				offsetTop: this.$refs.topSearch.offsetTop,
+				offsetHeight: this.$refs.topSearch.offsetHeight,
 				isFixed: false
 			}
 		},
 		computed: {
-			currentSortCode() {
-				return this.currentSort.sortCode
-			}
+			// 排序value
+			currentSortValue() {
+				return this.currentSort.value
+			},
+			...mapState('typeList', ['typeList'])
 		},
 		watch: {
-			currentSortCode(newCode, oldCode) {
-				this.currentPage = 0;
+			// 当排序方式发生变化时，重新获取列表并且判断是否进行滚动
+			currentSortValue() {
 				this.getBookList('refresh')
 				let scrollTo = this.sortBox.offsetTop - this.topSearch.offsetHeight;
 				if (this.$el.scrollTop > scrollTo) {
@@ -230,10 +222,31 @@
 			}
 		},
 		methods: {
+			...mapMutations('typeList', [SETTYPELIST]),
+			// 滚动事件
 			handleScroll() {
 				this.topSearch.isFixed = this.$el.scrollTop > this.topSearch.offsetTop ? true : false;
 				this.sortBox.isFixed = this.$el.scrollTop > this.sortBox.offsetTop - this.topSearch.offsetHeight ? true : false;
 			},
+			getSortType() {
+				this.$get('getType').then(res => {
+					if (0 === res.code) {
+						// this.typeList = res.result
+						this[SETTYPELIST]({
+							typeList: res.result
+						})
+					}
+					// 目的是为了在页面执行渲染完之后再去获取高度，避免高度获取错误
+					this.$nextTick(() => {
+						this.sortBox = {
+							offsetTop: this.$refs.sortBox.offsetTop,
+							offsetHeight: this.$refs.sortBox.offsetHeight,
+							isFixed: false
+						}
+					})
+				})
+			},
+			// 查看书本详情
 			getDetial(id) {
 				this.$router.push({
 					name: 'detailBook',
@@ -244,13 +257,13 @@
 			},
 			// fixed会当祖先元素transform不为none时失效   所以将定位瞬间切为absolute  达到迷惑的效果
 			judgeScroll() {
-				if (this.scrollTop > this.topSearch.offsetTop) {
+				if (this.scrollTop > this.topSearch.offsetTop) { // 当顶部搜索处于fixed状态时
 					this.searchTop = {
 						position: 'absolute',
 						top: this.scrollTop + 'px'
 					}
 				}
-				if (this.scrollTop > this.sortBox.offsetTop) {
+				if (this.scrollTop > this.sortBox.offsetTop) { //当排序处于fixed状态时
 					this.sortTop = {
 						position: 'absolute',
 						top: this.scrollTop + this.topSearch.offsetHeight + 'px'
@@ -260,17 +273,17 @@
 			// 点击排序导航栏
 			clickSort(e) {
 				let scrollTo = this.sortBox.offsetTop - this.topSearch.offsetHeight;
-				if (scrollTo > this.$el.scrollTop) {
+				if (scrollTo > this.$el.scrollTop) { // 点击排序导航栏时，如果排序盒子没有到fixed的状态，则把页面滚动到排序盒子刚好吸顶的状态
 					this.$el.scrollTo(0, scrollTo)
 				}
-				if (!this.sortListTop) {
+				if (!this.sortListTop) { //修改排序或者筛选列表的位置
 					this.sortListTop = this.sortBox.offsetHeight + this.topSearch.offsetHeight;
 				}
 				if (e.target.dataset.sortvalue) { //如果有这个值说明可以直接进行排序
 					let sv = e.target.dataset.sortvalue; //获取sortValue
-					this.currentSort.sortCode = sv;
-					if (sv != '5' && sv != '6') {
-						this.currentSort.sortValue = e.target.innerText;
+					this.currentSort.value = sv;
+					if (sv != 'rate' && sv != 'read_count') {
+						this.currentSort.label = e.target.innerText;
 					}
 				}
 				if (this.isShowZongHe) { //如果排序显示 对于排序来说只要他显示了那么不管点在哪里 肯定要隐藏
@@ -291,14 +304,14 @@
 				}
 			},
 			//增加一个筛选项
-			addOneShaixuan(itemIndex) {
+			addOneShaixuan(type) {
 				let flag = this.choosedList.findIndex(value => {
-					return value == itemIndex
+					return value === type
 				})
 				if (flag !== -1) {
 					this.choosedList.splice(flag, 1);
 				} else {
-					this.choosedList.push(itemIndex)
+					this.choosedList.push(type)
 				}
 			},
 			//清空筛选项
@@ -308,18 +321,20 @@
 			//筛选完成
 			choosedDone() {
 				this.isShowShaiXuan = false;
-				this.currentPage = 0;
 				this.getBookList('refresh')
 			},
 			// 获取图书
 			getBookList(refresh = 'norefresh') {
+				if (refresh === 'refresh') {
+					this.currentPage = 1
+				}
 				let params = {
-					code: this.currentSort.sortCode,
+					value: this.currentSort.value,
 					choosedList: this.choosedList,
 					pageSize: this.pageSize,
 					currentPage: this.currentPage
 				}
-				this.$post('sorkBook', params).then(res => {
+				this.$post('sortBook', params).then(res => {
 					if (res.code == 0) {
 						if (refresh === 'refresh') { //如果是下拉刷新
 							this.bookList = [];
@@ -327,9 +342,9 @@
 						} else {
 							this.loading = false;
 						}
-						this.currentPage++
 						this.bookList.push(...res.result);
 						this.finished = res.finished;
+						this.currentPage++
 					}
 				})
 			},
@@ -338,9 +353,7 @@
 			},
 			//下拉刷新
 			onRefresh() {
-				this.currentPage = 0;
 				setTimeout(() => {
-					this.bookList = [];
 					this.getBookList('refresh');
 				}, 1000)
 			},
@@ -354,7 +367,7 @@
 		beforeRouteEnter(to, from, next) {
 			next(vm => {
 				// 用定时器是为了等组件加载完再执行	
-				setTimeout(() => {	
+				setTimeout(() => {
 					vm.$el.scrollTop = vm.scrollTop;
 				}, 0)
 			})

@@ -51,10 +51,6 @@
 			]),
 		},
 		methods: {
-			...mapMutations('loginState',[
-				'setToken',
-				'setUser'
-			]),
 			logout() {
 				Dialog.confirm({
 				  message: '确定要退出登录吗',
