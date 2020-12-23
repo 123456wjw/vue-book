@@ -1,25 +1,25 @@
 <template>
 	<div class="find-book">
-		<h3 @click="isshowbox = true">发现</h3>
+		<h3>发现</h3>
 		<ul class="book-tabs" ref="bookTabs">
-			<li :ref="`tab${index}`" v-for="(tab, index) in tabList" :key="tab.id" @click="active = index" :class="{ active: active == index }">
+			<li :ref="`tab${index}`" v-for="(tab, index) in typeList" :key="tab.id" @click="active = index" :class="{ active: active == index }">
 				{{ tab.name }}
 			</li>
 			<div :style="{
           transform: `translateX(${offsetLeft}px)`,
           width: `${activeTabWidth}px`,
         }"
-			 class="tab-line"></div>
+			 class="tab-line" />
 		</ul>
 		<div class="book-pubus">
 			<div class="book-pubus-box" :style="{
-          width: `calc(100% * ${tabList.length})`,
+          width: `calc(100% * ${typeList.length})`,
           transform: `translateX(${moveX}px)`,
           transition: istransition,
         }"
 			 @touchstart="handlets" @touchmove="handletm" @touchend="handlete">
 				<van-pull-refresh :ref="`vanPullRefresh${index}`" :style="{
-            width: `calc(100% / ${tabList.length})`,
+            width: `calc(100% / ${typeList.length})`,
             overflowY: isHidden,
           }"
 				 class="book-pubu" v-model="pubu.pullLoading" @refresh="onRefresh(index)" :head-height="128" v-for="(pubu, index) in pubuList"
@@ -35,7 +35,7 @@
 					<template #loading>
 						<img src="../../assets/img/loading_active.png" style="animation: infiRotate 1s linear infinite;" />
 					</template>
-					<van-list v-model="pubu.listLoading" :finished="pubu.finished" finished-text="我也是有底线的" @load="onLoad(index)">
+					<van-list v-model="pubu.listLoading" :finished="pubu.finished" finished-text="我也是有底线的" @load="onLoad(index)" :immediate-check='false'>
 						<template #loading>
 							<img src="../../assets/img/loading_active.png" style="animation: infiRotate 1s linear infinite;" />
 						</template>
@@ -67,14 +67,17 @@
 </template>
 
 <script>
+	import {
+		mapState,
+		mapActions
+	} from 'vuex'
+
 	export default {
 		name: "findBook",
 		data() {
 			return {
-				isshowbox: false,
 				active: 0, //当前tab索引
 				offsetLeft: 0, //当前距离左边距离
-				tabList: [], //tab数组
 				innerWidth: 0, //屏幕宽度
 				activeTabWidth: 0, //当前tab宽度
 				myAnimateTimer: null, //tab滑动定时器
@@ -94,7 +97,6 @@
 		},
 		created() {
 			this.initPubuList();
-			this.getTabs();
 			this.innerWidth = window.innerWidth;
 			this.moveMin = (this.innerWidth * 2) / 3;
 			setTimeout(() => {
@@ -102,8 +104,18 @@
 			}, 1000);
 		},
 		mounted() {
-			this.activeTabWidth = this.$refs.tab0[0].offsetWidth;
-			console.log("this.activeTabWidth", this.activeTabWidth);
+			if (!this.typeList.length) {
+				this.getTypeList().then(res => {
+					this.activeTabWidth = this.$refs.tab0[0].offsetWidth;
+					this.getPubu(this.active)
+				})
+			} else {
+				this.activeTabWidth = this.$refs.tab0[0].offsetWidth;
+				this.getPubu(this.active)
+			}
+		},
+		computed: {
+			...mapState('typeList', ['typeList']),
 		},
 		watch: {
 			active: {
@@ -119,12 +131,13 @@
 			},
 		},
 		methods: {
+			...mapActions('typeList', ['getTypeList']),
 			initPubuList() {
 				for (let i = 0; i < 8; i++) {
 					this.pubuList.push({
 						leftPubu: [],
 						rightPubu: [],
-						currentPage: 0,
+						currentPage: 1,
 						leftHeight: 0,
 						rightHeight: 0,
 						newPubuList: [],
@@ -136,7 +149,6 @@
 				}
 			},
 			handlets(e) {
-				console.log("start", e);
 				this.startTime = new Date().getTime();
 				let {
 					pageX,
@@ -184,7 +196,7 @@
 				} else {
 					let diffTime = new Date().getTime() - this.startTime;
 					let moveX = e.changedTouches[0].pageX - this.startX;
-					let maxTab = this.tabList.length - 1;
+					let maxTab = this.typeList.length - 1;
 					if (
 						Math.abs(moveX) >= this.moveMin ||
 						(Math.abs(moveX) / diffTime) * 1000 >= this.speedMin
@@ -228,15 +240,10 @@
 					);
 				}, 10);
 			},
-			//获取tab
-			getTabs() {
-				let tabList = require("./tabList.json");
-				this.tabList = tabList;
-			},
 			// 获取瀑布流数据
 			getPubu(active, refresh = "norefresh") {
 				this.$post("findBook", {
-					type: active,
+					type: this.typeList[active].type,
 					pageSize: this.pageSize,
 					currentPage: this.pubuList[active].currentPage,
 				}).then((res) => {
@@ -256,7 +263,7 @@
 					let img = new Image();
 					img.src = item.src;
 					img.onload = () => {
-						imgList[index].h = img.height
+						imgList[index].h = img.height / img.width * (this.innerWidth / 2 - (20 / 75 * this.innerWidth / 10))
 						length++;
 						if (length == imgList.length) {
 							if (refresh == "refresh") {
@@ -297,16 +304,16 @@
 				imgList.forEach((item) => {
 					if (parseInt(leftH) <= parseInt(rightH)) {
 						resultList.pubuL.push(item);
-						if(leftH === 0) {
+						if (leftH === 0) {
 							leftH += 20 / 75 * this.innerWidth / 10
 						}
-						leftH += item.h + ((100 + 20 ) / 75 * this.innerWidth / 10);
+						leftH += item.h + ((100 + 20) / 75 * this.innerWidth / 10);
 					} else {
 						resultList.pubuR.push(item);
-						if(rightH === 0) {
+						if (rightH === 0) {
 							rightH += 20 / 75 * this.innerWidth / 10
 						}
-						rightH += item.h + ((100 + 20 ) / 75 * this.innerWidth / 10);
+						rightH += item.h + ((100 + 20) / 75 * this.innerWidth / 10);
 					}
 				});
 				callBack(resultList, leftH, rightH);
@@ -316,7 +323,7 @@
 				if (this.active != index) {
 					return;
 				}
-				this.pubuList[index].currentPage = 0;
+				this.pubuList[index].currentPage = 1;
 				this.getPubu(index, "refresh");
 			},
 			//上拉加载
@@ -449,12 +456,13 @@
 
 								>img {
 									width: 100%;
+									height: auto;
 								}
 
 								>div {
-									
+
 									height: 100px;
-									
+
 									>h3 {
 										padding: 10px 10px 5px;
 										box-sizing: border-box;

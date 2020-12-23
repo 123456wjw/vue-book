@@ -120,7 +120,7 @@
 						</transition>
 					</div>
 					<van-list :style='{marginTop: `${sortBox.isFixed ? sortBox.offsetHeight : 0}px`}' v-model="loading" :finished="finished"
-					 finished-text="我也是有底线的" @load="onLoad">
+					 finished-text="我也是有底线的" @load="onLoad" :immediate-check='false'>
 						<template #loading>
 							<img src="../../assets/img/loading_active.png" style='animation: infiRotate 1s linear infinite;' />
 						</template>
@@ -131,7 +131,7 @@
 									<h4 class='book-title'>{{book.title}}</h4>
 									<span class='book-msg'>收藏数 {{book.collect}}</span><br>
 									<span class='book-msg'>评分 {{book.rate}}</span><br>
-									<span class='book-msg'>阅读数 {{book.readcount}}</span>
+									<span class='book-msg'>阅读数 {{book.read_count}}</span>
 								</div>
 							</li>
 						</ul>
@@ -146,11 +146,8 @@
 	import indexSearch from '../indexSearch/indexSearch'
 	import {
 		mapState,
-		mapMutations
+		mapActions
 	} from 'vuex'
-	import {
-		SETTYPELIST
-	} from 'store/modules/typeList/mutationTypes.js'
 
 	export default {
 		name: 'index',
@@ -195,7 +192,9 @@
 		},
 		created() {
 			this.getBookList();
-			this.getSortType()
+			if (!this.typeList.length) {
+				this.getSortType()
+			}
 		},
 		mounted() {
 			this.topSearch = {
@@ -222,20 +221,14 @@
 			}
 		},
 		methods: {
-			...mapMutations('typeList', [SETTYPELIST]),
+			...mapActions('typeList', ['getTypeList']),
 			// 滚动事件
 			handleScroll() {
 				this.topSearch.isFixed = this.$el.scrollTop > this.topSearch.offsetTop ? true : false;
 				this.sortBox.isFixed = this.$el.scrollTop > this.sortBox.offsetTop - this.topSearch.offsetHeight ? true : false;
 			},
 			getSortType() {
-				this.$get('getType').then(res => {
-					if (0 === res.code) {
-						// this.typeList = res.result
-						this[SETTYPELIST]({
-							typeList: res.result
-						})
-					}
+				this.getTypeList().then(res => {
 					// 目的是为了在页面执行渲染完之后再去获取高度，避免高度获取错误
 					this.$nextTick(() => {
 						this.sortBox = {
@@ -353,15 +346,11 @@
 			},
 			//下拉刷新
 			onRefresh() {
-				setTimeout(() => {
-					this.getBookList('refresh');
-				}, 1000)
+				this.getBookList('refresh');
 			},
 			//上拉加载
 			onLoad() {
-				setTimeout(() => {
-					this.getBookList()
-				}, 1000);
+				this.getBookList()
 			},
 		},
 		beforeRouteEnter(to, from, next) {
