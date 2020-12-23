@@ -31,7 +31,8 @@
 <script>
 	import bookList from '../bookList/bookList'
 	import {
-		Dialog
+		Dialog,
+		Toast
 	} from 'vant';
 	import { mapState } from 'vuex'
 	export default {
@@ -52,10 +53,6 @@
 		components: {
 			bookList
 		},
-		// created() {
-		// 	this.getHotSearch()
-		// 	this.getHistorySearch()
-		// },
 		watch: {
 			searchParam(newValue, oldValue) {
 				if(newValue !== oldValue && newValue) {
@@ -138,14 +135,15 @@
 			},
 			delHistorySearch() {
 				Dialog.confirm({
-					message: '确认删除吗？',
+					message: '确认清空吗？',
 				}).then(() => {
-					console.log('删除')
-					this.historyList = []
-				}).catch(() => {
-					console.log('删除')
-				})
-
+					this.$post('deleteHistorySearch').then(({code}) => {
+						if(0 === code) {
+							Toast.success('清空成功');
+							this.historyList = []
+						}
+					})
+				}).catch(() => {})
 			}
 		}
 	}

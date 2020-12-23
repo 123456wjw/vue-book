@@ -30,24 +30,20 @@ import {
 	Swipe, 
 	SwipeItem,
 	Lazyload,
-	Sticky,
 	PullRefresh,
 	List,
 	SwipeCell,
 	Button,
 	Loading,
-	Toast
 } from 'vant';
 Vue.use(Swipe);
 Vue.use(SwipeItem);
 Vue.use(Lazyload);
-Vue.use(Sticky);
 Vue.use(PullRefresh);
 Vue.use(List);
 Vue.use(SwipeCell);
 Vue.use(Button);
 Vue.use(Loading);
-Vue.use(Toast);
 Vue.config.productionTip = false;
 // 注册一个全局自定义指令 `v-focus`
 Vue.directive('focus', {

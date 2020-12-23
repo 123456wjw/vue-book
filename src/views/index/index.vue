@@ -391,21 +391,6 @@
 		.van-pull-refresh__head {
 			background-color: white;
 		}
-
-		/* 顶部搜索 */
-		.van-sticky--fixed {
-			left: auto;
-			right: auto;
-		}
-
-		.van-sticky {
-			width: 100%;
-		}
-
-		.van-sticky.van-sticky--fixed {
-			width: calc(100% - 40px);
-		}
-
 	}
 
 	/* 顶部背景 */
