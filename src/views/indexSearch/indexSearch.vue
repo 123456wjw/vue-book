@@ -19,7 +19,7 @@
 						<img @click='delHistorySearch' src="./del.png">
 					</p>
 					<ul>
-						<li v-for='item in historyList' :key='item.id'>{{item.title}}</li>
+						<li v-for='item in historyList' :key='item.id' @click='chooseHot(item.title)'>{{item.title}}</li>
 					</ul>
 				</div>
 			</div>
