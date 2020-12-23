@@ -4,7 +4,7 @@
 			<div class="login" @click='!token && gotoLogin()'>
 				<div class='loginImg'>
 					<input class='chooseImg' type="file" v-show='token' accept='image/gif,image/jpeg,image/jpg,image/png,image/svg' @change="change($event)">
-					<img id='photoImg' :src='user.photosrc || require("./default.png")' v-if='token'>
+					<img id='photoImg' :src='user.photo_src || require("./default.png")' v-if='token'>
 					<img src="./default.1.png" v-if='!token'>
 				</div>
 				<div class='loginTitle' v-if='!token'>

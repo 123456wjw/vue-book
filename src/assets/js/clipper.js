@@ -242,7 +242,7 @@ export default {
 			this.$post('users/savePhoto', params,config).then(res => {
 				console.log('users/savePhoto', res);
 				if(res.code == 0) {
-					user.photosrc = res.photosrc;
+					user.photo_src = res.photo_src;
 				}
 				window.localStorage.setItem('user', JSON.stringify(user));
 				document.querySelector('.crop_loading').style.display = 'none';
