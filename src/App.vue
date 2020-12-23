@@ -129,4 +129,19 @@
 			height: 50px;
 		}
 	}
+	
+	//重写toast样式
+	div.van-toast {
+		min-width: 200px;
+		max-width: 70%;
+		padding: 20px;
+		.van-toast__icon {
+			@include ft-size(20);
+			margin-top: 20px;
+		}
+		.van-toast__text {
+			@include ft-size(14);
+			margin: 20px 0;
+		}
+	}
 </style>
