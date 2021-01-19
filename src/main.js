@@ -1,10 +1,10 @@
 /*
  * @Author: wjw
- * @Date: 2021-01-19 17:32:52
- * @LastEditTime: 2021-01-19 17:35:34
+ * @Date: 2021-01-19 17:39:14
+ * @LastEditTime: 2021-01-19 17:40:19
  * @LastEditors: your name
  * @Description: In User Settings Edit
- * @FilePath: \react-punkd:\work\test\vue-book\src\main.js
+ * @FilePath: \react-punkd:\work\testtest\vue-book\src\main.js
  */
 import Vue from "vue";
 import App from "./App.vue";
@@ -19,7 +19,6 @@ Vue.use(RouteTransition)
 //移动端滑动切换组件
 import VueTouch from 'vue-touch'
 Vue.use(VueTouch, {name: 'v-touch'})
-
 
 //解决移动端点击事件300ms延迟
 import fastclick from "fastclick"
