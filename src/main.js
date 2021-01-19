@@ -1,11 +1,3 @@
-/*
- * @Author: wjw
- * @Date: 2021-01-19 17:39:14
- * @LastEditTime: 2021-01-19 17:40:19
- * @LastEditors: your name
- * @Description: In User Settings Edit
- * @FilePath: \react-punkd:\work\testtest\vue-book\src\main.js
- */
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
