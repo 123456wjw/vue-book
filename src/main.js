@@ -8,6 +8,7 @@ import 'lib-flexible';
 import RouteTransition from 'vue-route-transition'
 Vue.use(RouteTransition)
 
+
 //移动端滑动切换组件
 import VueTouch from 'vue-touch'
 Vue.use(VueTouch, {name: 'v-touch'})
