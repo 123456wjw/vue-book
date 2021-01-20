@@ -1,7 +1,7 @@
 /*
- * @Author: your name
+ * @Author: wjw
  * @Date: 2020-12-09 09:11:14
- * @LastEditTime: 2020-12-09 11:01:37
+ * @LastEditTime: 2021-01-20 10:08:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \react-punkd:\work\vue-book\vue.config.js
