@@ -1,7 +1,7 @@
 /*
  * @Author: wjw
  * @Date: 2020-12-09 09:11:14
- * @LastEditTime: 2021-01-20 10:08:38
+ * @LastEditTime: 2021-01-20 10:10:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \react-punkd:\work\vue-book\vue.config.js
@@ -28,7 +28,7 @@ const vueConfig = {
     // host: "localhost",
     port: 8080, // 端口号
     https: false, // https:{type:Boolean}
-    open: false, //配置自动启动浏览器
+    open: true, //配置自动启动浏览器
     overlay: {
       warnings: false,
       errors: false,
