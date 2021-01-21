@@ -1,24 +1,15 @@
 # vue-mobile-demo
 
-## Project setup
+## 下载项目依赖
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 运行项目，后来连接的是我的阿里云
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### 项目描述
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+该项目前端使用vue2全家桶技术，主要实现了手机登录，图片裁剪上传，tab栏瀑布流，转场动画等等功能。
